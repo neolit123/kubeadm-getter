@@ -109,7 +109,7 @@ func processClientSingleFile(connection net.Conn, file, outputPath string, token
 		return err
 	}
 	szBlock := binary.LittleEndian.Uint32(szBuf)
-	fmt.Printf("* receiving file %s of size %d bytes\n", file, szBlock)
+	fmt.Printf("* receiving encrypted file %q of size %d bytes\n", file, szBlock)
 	buf := make([]byte, int(szBlock))
 	if err := ConnRead(connection, buf, int(szBlock)); err != nil {
 		return err
