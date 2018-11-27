@@ -11,7 +11,7 @@ A handshake is performed to ensure that the client knows the same token
 as the server.
 
 the client can only request files from the server input folder and its children.
-the list of files can be separated using `;`. wildcards are not allowed.
+the list of files can be separated using `,`. wildcards are not allowed.
 
 the connection automatically terminates after a period of time (TTL).
 
@@ -23,7 +23,7 @@ sudo kubeadm-getter --listen --address=<server-ip> --port=11000 --ttl=240 \
 # client example:
 sudo kubeadm-getter --address=<server-ip> --port=11000 --ttl=240 \
 --token=abcdef.1234567890abcdef --output-path=/etc/kubernetes \
---files=pki/ca.crt;pki/ca.key;admin.conf
+--files=pki/ca.crt,pki/ca.key,admin.conf
 ```
 
 in case you don't have a token call:
