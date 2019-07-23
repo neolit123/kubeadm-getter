@@ -16,7 +16,7 @@ const (
 	MaxFiles = 128
 
 	// TokenSize ...
-	TokenSize = 23
+	TokenSize = 32
 
 	// HandShakeSize ...
 	HandShakeSize = 1024
@@ -25,7 +25,7 @@ const (
 	Uint32Size = 4
 
 	// TokenPattern ...
-	TokenPattern = `\A([a-z0-9]{6})\.([a-z0-9]{16})\z`
+	TokenPattern = `\A([a-z0-9]{64})\z`
 
 	// TightLoopWaitTime ...
 	TightLoopWaitTime = 2

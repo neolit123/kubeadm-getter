@@ -6,16 +6,9 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 )
-
-func createHash(key []byte) []byte {
-	hasher := sha256.New()
-	hasher.Write(key)
-	return hasher.Sum(nil)
-}
 
 func createRandBytes(sz uint32) ([]byte, error) {
 	bytes := make([]byte, sz)
@@ -40,13 +33,12 @@ func CreateToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	bytes = createHash(bytes)
-	return hex.EncodeToString(bytes[:3]) + "." + hex.EncodeToString(bytes[3:11]), nil
+	return hex.EncodeToString(bytes), nil
 }
 
 // EncryptBytes ...
 func EncryptBytes(data []byte, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(createHash(key))
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +56,7 @@ func EncryptBytes(data []byte, key []byte) ([]byte, error) {
 
 // DecryptBytes ...
 func DecryptBytes(data []byte, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(createHash(key))
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}

@@ -3,24 +3,29 @@
 package cmd
 
 import (
+	"encoding/hex"
 	"flag"
 	"fmt"
 	"os"
 	"strings"
 
-	"github.com/neolit123/kubeadm-getter/pkg"
+	"github.com/neolit123/tokenized-getter/pkg"
 )
 
-const example = `
-    # server example:
-    sudo kubeadm-getter --listen --address=<server-ip> --port=11000 --ttl=240 \
-    --token=abcdef.1234567890abcdef --input-path=/etc/kubernetes/pki
+const (
+	exampleToken = "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+	example      = `
+# server example:
+tokenized-getter --listen --address=<server-ip> --port=11000 --ttl=240 \
+--token=` + exampleToken + ` \
+--input-path=/some-path
 
-    # client example:
-    sudo kubeadm-getter --address=<server-ip> --port=11000 --ttl=240 \
-    --token=abcdef.1234567890abcdef --output-path=/etc/kubernetes/pki \
-    --files=ca.crt;ca.key
+# client example:
+tokenized-getter --address=<server-ip> --port=11000 --ttl=240 \
+--token=` + exampleToken + ` \
+--output-path=/some-path --files=ca.crt;ca.key
 `
+)
 
 // Run ...
 func Run() error {
@@ -32,8 +37,8 @@ func Run() error {
 		return err
 	}
 
-	fmt.Println("* kubeadm-getter")
-	fmt.Printf("* using the following token:\n%s\n", string(o.Token))
+	fmt.Println("* tokenized-getter")
+	fmt.Printf("* using the following token:\n%s\n", hex.EncodeToString(o.Token))
 
 	// act like a server or client
 	if o.Listen {
@@ -67,7 +72,7 @@ func parseFlags(o *pkg.Options) error {
 	flag.IntVar(&o.TTL, "ttl", pkg.DefaultTTL, "maximum time (seconds) for the process to be active. use 0 for no limit")
 	flag.IntVar(&o.Port, "port", pkg.DefaultPort, "port to connect to or listen on")
 	flag.StringVar(&o.Address, "address", "", "address of a server to connect to as a client or listen to as a server")
-	flag.StringVar(&token, "token", "", "token to be used for authorization - e.g. abcdef.1234567890abcdef")
+	flag.StringVar(&token, "token", "", fmt.Sprintf("a 32 byte token to be used for authorization - e.g. %s", exampleToken))
 	flag.BoolVar(&createToken, "create-token", false, "creates a secure token")
 	// server
 	flag.StringVar(&o.InputPath, "input-path", "./", "(server) the path where uploaded files are location")

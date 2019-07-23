@@ -3,6 +3,7 @@
 package pkg
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net"
@@ -16,7 +17,7 @@ func ValidateOptions(o *Options) error {
 
 	// validate TTL
 	if o.TTL < 0 {
-		return errors.New("error: cannot use negative TTL value")
+		return errors.New("cannot use negative TTL value")
 	}
 
 	// validate server / client flags
@@ -30,12 +31,12 @@ func ValidateOptions(o *Options) error {
 
 	// validate port
 	if o.Port < 0 || o.Port > 65535 {
-		return errors.New("error: port value should be in the [0-65535] range")
+		return errors.New("port value should be in the [0-65535] range")
 	}
 
 	// validate IP
 	if ip := net.ParseIP(o.Address); ip == nil {
-		return fmt.Errorf("error: invalid server IP: %s", o.Address)
+		return fmt.Errorf("invalid server IP: %s", o.Address)
 	}
 
 	// make sure output path exists
@@ -50,7 +51,7 @@ func ValidateOptions(o *Options) error {
 	if !o.Listen {
 		// validate the file list
 		if len(o.Files) > MaxFiles {
-			return errors.New("error: maximum number of files is 128")
+			return errors.New("maximum number of files is 128")
 		}
 
 		for i := range o.Files {
@@ -60,34 +61,38 @@ func ValidateOptions(o *Options) error {
 				if len(o.Files) == 1 {
 					return errors.New("error: empty list of files")
 				}
-				return fmt.Errorf("error: empty filename at position: %d", i)
+				return fmt.Errorf("empty filename at position: %d", i)
 			}
 			if len(f) > MaxFileName {
-				return fmt.Errorf("error: maximum filename length is %d", MaxFileName)
+				return fmt.Errorf("maximum filename length is %d", MaxFileName)
 			}
 			// fetching files parent to the input path of the server is a securty risk
 			if strings.Contains(f, "..") {
-				return fmt.Errorf("error: filename cannot contain '..': %s", f)
+				return fmt.Errorf("filename cannot contain '..': %s", f)
 			}
 		}
 	} else {
 		if len(o.Token) == 0 {
 			token, err := CreateToken()
 			if err != nil {
-				return fmt.Errorf("error: cannot auto-create new token")
+				return fmt.Errorf("cannot auto-create new token")
 			}
 			o.Token = []byte(token)
 		}
 	}
 
-	// validate token
-	if len(o.Token) == 0 {
-		return errors.New("error: token cannot be empty")
-	}
+	// match the token
 	tokenRegExp := regexp.MustCompile(TokenPattern)
 	if !tokenRegExp.Match(o.Token) {
-		return fmt.Errorf("error: token does not match the pattern %q", TokenPattern)
+		return fmt.Errorf("token does not match the pattern %q", TokenPattern)
 	}
+
+	// decode token
+	t, err := hex.DecodeString(string(o.Token))
+	if err != nil {
+		return fmt.Errorf("could not decode the token string: %v", err)
+	}
+	o.Token = t
 
 	return nil
 }

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/neolit123/kubeadm-getter/cmd"
+	"github.com/neolit123/tokenized-getter/cmd"
 )
 
 func main() {

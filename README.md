@@ -1,4 +1,4 @@
-### kubeadm-getter
+### tokenized-getter
 
 this project uses TCP sockets to transfer files from a server machine
 to a client machine.
@@ -17,18 +17,19 @@ the connection automatically terminates after a period of time (TTL).
 
 ```
 # server example:
-sudo kubeadm-getter --listen --address=<server-ip> --port=11000 --ttl=240 \
---token=abcdef.1234567890abcdef --input-path=/etc/kubernetes
+tokenized-getter --listen --address=<server-ip> --port=11000 --ttl=240 \
+--token=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890 \
+--input-path=/some-path
 
 # client example:
-sudo kubeadm-getter --address=<server-ip> --port=11000 --ttl=240 \
---token=abcdef.1234567890abcdef --output-path=/etc/kubernetes \
---files=pki/ca.crt,pki/ca.key,admin.conf
+tokenized-getter --address=<server-ip> --port=11000 --ttl=240 \
+--token=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890 \
+--output-path=/some-path --files=ca.crt;ca.key
 ```
 
 in case you don't have a token call:
 ```
-kubeadm-getter --create-token
+tokenized-getter --create-token
 ```
 
 for the list of available command line flags see `--help`.
