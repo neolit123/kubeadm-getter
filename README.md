@@ -24,7 +24,7 @@ tokenized-getter --listen --address=<server-ip> --port=11000 --ttl=240 \
 # client example:
 tokenized-getter --address=<server-ip> --port=11000 --ttl=240 \
 --token=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890 \
---output-path=/some-path --files=ca.crt;ca.key
+--output-path=/some-path --files=ca.crt,ca.key
 ```
 
 in case you don't have a token call:
