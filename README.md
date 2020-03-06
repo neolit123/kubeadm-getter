@@ -4,8 +4,8 @@ this project uses TCP sockets to transfer files from a server machine
 to a client machine.
 
 the data transfer is encrypted using AES-256 with Galois/Counter Mode (GCM).
-the encryption key is a Kubernetes bootstrap token that both the client
-and server should know.
+the encryption key is 32 bytes long and should be known by both the client
+and server.
 
 A handshake is performed to ensure that the client knows the same token
 as the server.
